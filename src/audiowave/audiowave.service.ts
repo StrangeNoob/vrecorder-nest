@@ -9,22 +9,21 @@ const execAsync = promisify(exec);
 @Injectable()
 export class AudiowaveService {
   async getWavePoints(file: Express.Multer.File) {
-    const { buffer } = file;
-    console.log(resolve(__dirname, '../../assets'));
-    const fileName = Date.now();
+    const { buffer, originalname } = file;
+    console.log(file);
     await writeFile(
-      resolve(__dirname, '../../assets', `${fileName}.wav`),
+      resolve(__dirname, '../../assets', `${originalname}`),
       buffer,
     );
     await execAsync(
       `audiowaveform -i ${resolve(
         __dirname,
         '../../assets',
-        `${fileName}.wav`,
-      )} -o ${resolve(__dirname, '../../assets', `${fileName}.json`)} -z 2`,
+        `${originalname}`,
+      )} -o ${resolve(__dirname, '../../assets', `${originalname}.json`)} -z 2`,
     );
     const data = await readFile(
-      resolve(__dirname, '../../assets', `${fileName}.json`),
+      resolve(__dirname, '../../assets', `${originalname}.json`),
       { encoding: 'utf-8' },
     );
     return JSON.parse(data);
